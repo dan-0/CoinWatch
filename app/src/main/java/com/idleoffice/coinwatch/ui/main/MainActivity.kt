@@ -24,13 +24,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
 
     var activityMainBinding : ActivityMainBinding? = null
 
-    var mainViewModel : MainViewModel? = null
+    private var mainViewModel : MainViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Timber.d("Main activity onCreate called")
         super.onCreate(savedInstanceState)
         this.activityMainBinding = viewDataBinding
         mainViewModel?.navigator = this
-        setContentView(R.layout.activity_main)
+        mainViewModel?.onBtnClickEndDateClick()
     }
 
     override fun getActivityViewModel(): MainViewModel {
@@ -54,6 +55,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
-        return null
+        return fragmentDispatchingAndroidInjector
     }
 }

@@ -9,8 +9,8 @@ interface CoinDataDao {
     @Query("SELECT * FROM coin_data")
     fun getAllCoinData(): List<CoinData>
 
-    @Query("SELECT * FROM coin_data WHERE id = :p0")
-    fun findCoinDataById(id: Long): CoinData
+    @Query("SELECT * FROM coin_data WHERE date = :date")
+    fun findCoinDataByDate(date: Long): CoinData
 
     @Insert(onConflict = REPLACE)
     fun insertCoinData(coinData: CoinData)
