@@ -4,8 +4,9 @@
     <string name="usd_sign">$</string>
     <string name="usd">USD</string>
     <string name="place_holder_amount">0.00</string>
-    <string name="start_date">Start Date</string>
-    <string name="end_date">End Date</string>
+    <string name="all_time">All Time</string>
+    <string name="last_month">Last Month</string>
+    <string name="last_day">Last Day</string>
     <string name="placeholder_date_start">01 Jan 2018</string>
     <string name="placeholder_date_end">31 Jan 2018</string>
     <string name="label_date_end">End</string>

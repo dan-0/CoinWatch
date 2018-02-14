@@ -6,6 +6,8 @@ buildscript {
     ext.roomVersion = '1.0.0'
     ext.lifecycleVersion = '1.1.0'
     ext.daggerVersion = "2.11"
+    ext.retrofitVersion = "2.3.0"
+    ext.moshiVersion = "1.5.0"
 
     repositories {
         google()
