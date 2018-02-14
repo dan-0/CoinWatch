@@ -18,7 +18,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideContext(application : Application) : Context {
+    fun provideApplication(application : Application) : Context {
         return application
     }
 
@@ -30,15 +30,9 @@ class AppModule {
     @Provides
     @Singleton
     fun provideBitcoinAverageInfoService() : BitcoinAverageInfoService {
-//        val listBcInfoType = Types.newParameterizedType(List::class.java, BitcoinAverageInfo::class.java)
-//        val moshi = Moshi.Builder().build()
-//        val adapter = moshi.adapter<List<BitcoinAverageInfo>>(listBcInfoType)
-//        moshi.ad
         val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
-//        moshi.adapter<List<BitcoinAverageInfo>>(listBcInfoType)
-//        moshi.adapter<List<BitcoinAverageInfo>>(listBcInfoType)
         return Retrofit.Builder()
                 .baseUrl(BitcoinAverageInfoService.BITCOIN_INFO_URL)
                 .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())

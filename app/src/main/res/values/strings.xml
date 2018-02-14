@@ -11,4 +11,6 @@
     <string name="placeholder_date_end">31 Jan 2018</string>
     <string name="label_date_end">End</string>
     <string name="label_date_start">Start</string>
+    <string name="error_from_server">There was an error connecting to the server, please check
+        your network connection and try again later.</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.idleoffice.coinwatch.ui.main
 
+import android.app.Application
 import android.arch.lifecycle.ViewModelProvider
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.SchedulerProvider
@@ -11,8 +12,11 @@ import dagger.Provides
 class MainActivityModule {
 
     @Provides
-    fun provideMainViewModel(schedulerProvider: SchedulerProvider, bitcoinAverageInfoService: BitcoinAverageInfoService) : MainViewModel {
-        return MainViewModel(schedulerProvider, bitcoinAverageInfoService)
+    fun provideMainViewModel(
+            application: Application,
+            schedulerProvider: SchedulerProvider,
+            bitcoinAverageInfoService: BitcoinAverageInfoService) : MainViewModel {
+        return MainViewModel(application, schedulerProvider, bitcoinAverageInfoService)
     }
 
     @Provides

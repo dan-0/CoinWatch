@@ -20,11 +20,11 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/currentPriceLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/graphLayout"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layouut_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layoutt_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/graphLayout"
+            app:layo_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/priceLabel"
@@ -34,6 +34,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/current_btc_exchange_rate"
                 android:textSize="@dimen/price_label_size"
+                app:layout_constraintBottom_toTopOf="@id/priceTextHolder"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,9 +48,9 @@
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/priceLabel"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.25"
-                app:layout_constraintStart_toStartOf="@+id/priceLabel"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/priceLabel">
 
                 <TextView
@@ -78,8 +79,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/graphLayout"
-            android:layout_width="match_parent"
-            android:layout_height="465dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +89,7 @@
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toTopOf="@+id/seekBar"
@@ -107,10 +108,10 @@
                 android:layout_marginTop="8dp"
                 android:max="100"
                 android:progress="0"
+                app:layout_constraintBottom_toTopOf="@id/dateBtnBar"
                 app:layout_constraintEnd_toEndOf="@+id/chart"
                 app:layout_constraintStart_toStartOf="@+id/chart"
-                app:layout_constraintTop_toBottomOf="@id/chart"
-                app:layout_constraintBottom_toTopOf="@id/dateBtnBar"/>
+                app:layout_constraintTop_toBottomOf="@id/chart" />
 
             <android.support.v7.widget.ButtonBarLayout
                 android:id="@+id/dateBtnBar"
@@ -118,8 +119,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:divider="?android:attr/dividerHorizontal"
-                android:showDividers="middle"
                 android:orientation="horizontal"
+                android:showDividers="middle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/seekBar">
@@ -127,74 +128,74 @@
                 <Button
                     android:id="@+id/btnPickAll"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:onClick="@{() -> viewModel.onBtnClickAllTime()}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="@{() -> viewModel.onBtnClickAllTime()}"
                     android:text="@string/all_time" />
 
                 <Button
                     android:id="@+id/btnPickMonth"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:onClick="@{() -> viewModel.onBtnClickMonth()}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="@{() -> viewModel.onBtnClickMonth()}"
                     android:text="@string/last_month" />
 
                 <Button
                     android:id="@+id/btnPickDay"
                     style="?android:attr/buttonBarButtonStyle"
-                    android:onClick="@{() -> viewModel.onBtnClickDay()}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:onClick="@{() -> viewModel.onBtnClickDay()}"
                     android:text="@string/last_day" />
             </android.support.v7.widget.ButtonBarLayout>
             <!--<LinearLayout-->
-                <!--android:id="@+id/dateTextDisplays"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@id/dateBtnBar"-->
-                <!--android:baselineAligned="false">-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical"-->
-                    <!--&gt;-->
+            <!--android:id="@+id/dateTextDisplays"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@id/dateBtnBar"-->
+            <!--android:baselineAligned="false">-->
+            <!--<LinearLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="vertical"-->
+            <!--&gt;-->
 
-                    <!--<TextView-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/label_date_start"/>-->
-                    <!--<TextView-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/placeholder_date_start"/>-->
-                <!--</LinearLayout>-->
-                <!--<LinearLayout-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:orientation="vertical"-->
-                    <!--&gt;-->
-                    <!--<TextView-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/label_date_end"/>-->
-                    <!--<TextView-->
-                        <!--android:textAlignment="center"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="@string/placeholder_date_end"/>-->
-                <!--</LinearLayout>-->
+            <!--<TextView-->
+            <!--android:textAlignment="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/label_date_start"/>-->
+            <!--<TextView-->
+            <!--android:textAlignment="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/placeholder_date_start"/>-->
+            <!--</LinearLayout>-->
+            <!--<LinearLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="vertical"-->
+            <!--&gt;-->
+            <!--<TextView-->
+            <!--android:textAlignment="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/label_date_end"/>-->
+            <!--<TextView-->
+            <!--android:textAlignment="center"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/placeholder_date_end"/>-->
+            <!--</LinearLayout>-->
             <!--</LinearLayout>-->
 
         </android.support.constraint.ConstraintLayout>
