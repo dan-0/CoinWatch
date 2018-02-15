@@ -13,4 +13,6 @@
     <string name="label_date_start">Start</string>
     <string name="error_from_server">There was an error connecting to the server, please check
         your network connection and try again later.</string>
+    <string name="selected_date">Selected Date:</string>
+    <string name="selected_value">Selected Value:</string>
 </resources>

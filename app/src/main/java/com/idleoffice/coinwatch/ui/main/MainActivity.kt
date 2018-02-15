@@ -3,19 +3,20 @@ package com.idleoffice.coinwatch.ui.main
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.widget.SeekBar
+import android.support.v4.content.ContextCompat
 import android.widget.Toast
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.components.Description
 import com.idleoffice.coinwatch.BR
 import com.idleoffice.coinwatch.R
-import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
+import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
 import com.idleoffice.coinwatch.databinding.ActivityMainBinding
 import com.idleoffice.coinwatch.ui.base.BaseActivity
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,17 +35,34 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         super.onCreate(savedInstanceState)
         this.activityMainBinding = viewDataBinding
         mainViewModel.navigator = this
+        setGraphObserver()
+        setPriceObserver()
+        initChart()
 
+    }
+
+    private fun setGraphObserver() {
         val graphDataObserver = Observer<CoinLineData> {
             if (it == null) {
                 return@Observer
             }
             Timber.d("Detected graph data change")
-            updateGraph(it.getLineData())
-            updateSeeker(it.bcInfo)
+            updateChart(it)
         }
 
         mainViewModel.graphData.observe(this, graphDataObserver)
+    }
+
+    private fun setPriceObserver() {
+        val priceDataObserver = Observer<BitcoinAverageCurrent> {
+            if (it == null) {
+                return@Observer
+            }
+            Timber.d("Detected graph data change")
+            updatePrice(String.format("%.2f", it.last))
+        }
+
+        mainViewModel.currentPrice.observe(this, priceDataObserver)
     }
 
     override fun getActivityViewModel(): MainViewModel {
@@ -59,11 +77,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         return R.layout.activity_main
     }
 
-    override fun setSeekerMax(max: Int) {
-        val seekBar = findViewById<SeekBar>(R.id.seekBar)
-        seekBar.max = max
-    }
-
     override fun handleError(t: Throwable) {
         Timber.e(t)
     }
@@ -76,19 +89,35 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         return fragmentDispatchingAndroidInjector
     }
 
-    private fun updateGraph(lineData: LineData) {
+    private fun initChart() {
         val chart = findViewById<LineChart>(R.id.chart)
+        chart.setOnChartValueSelectedListener(mainViewModel.onChartValueSelectedListener())
+        chart.axisLeft.textColor = ContextCompat.getColor(this, R.color.textPrimary)
+    }
+
+    private fun updateChart(data : CoinLineData) {
+        val lineData = data.getLineData()
+        chart.legend.textColor = ContextCompat.getColor(this, R.color.textPrimary)
+        chart.xAxis.setDrawLabels(false)
+        chart.axisRight.setDrawLabels(false)
         chart.data = lineData
+        val description = Description()
+        description.textColor = ContextCompat.getColor(this, R.color.textPrimary)
+        description.text = data.sampleName
+        chart.description = description
 
         chart.invalidate()
     }
 
-    private fun updateSeeker(coinInfo : List<BitcoinAverageInfo>) {
-        val seeker = findViewById<SeekBar>(R.id.seekBar)
-        seeker.max = coinInfo.size
+    override fun xAxisLabel(label : CharSequence) {
+        xAxisLabel.text = label
+    }
+
+    override fun valueLabel(label: CharSequence) {
+        yAxisLabel.text = label
     }
 
     override fun updatePrice(price: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        priceText.text = price
     }
 }

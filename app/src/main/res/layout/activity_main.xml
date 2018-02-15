@@ -20,11 +20,11 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/currentPriceLayout"
             android:layout_width="match_parent"
-            android:layouut_constraintEnd_toEndOf="parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layoutt_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/graphLayout"
-            app:layo_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/priceLabel"
@@ -89,41 +89,78 @@
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="0dp"
-                android:layout_height="200dp"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/seekBar"
+                app:layout_constraintBottom_toTopOf="@id/axisLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
             </com.github.mikephil.charting.charts.LineChart>
 
-            <SeekBar
-                android:id="@+id/seekBar"
-                style="@style/Widget.AppCompat.SeekBar.Discrete"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/axisLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/valueLayout"
+                app:layout_constraintEnd_toEndOf="@id/chart"
+                app:layout_constraintStart_toStartOf="@id/chart"
+                app:layout_constraintTop_toBottomOf="@id/chart">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/selected_date"
+                    android:textSize="@dimen/date_time_size" />
+
+                <TextView
+                    android:id="@+id/xAxisLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textSize="@dimen/date_time_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/valueLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:max="100"
-                android:progress="0"
-                app:layout_constraintBottom_toTopOf="@id/dateBtnBar"
-                app:layout_constraintEnd_toEndOf="@+id/chart"
-                app:layout_constraintStart_toStartOf="@+id/chart"
-                app:layout_constraintTop_toBottomOf="@id/chart" />
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/dateBtnBar"
+                app:layout_constraintEnd_toEndOf="@id/chart"
+                app:layout_constraintStart_toStartOf="@id/chart"
+                app:layout_constraintTop_toBottomOf="@id/axisLayout">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/selected_value"
+                    android:textSize="@dimen/date_time_size" />
+
+                <TextView
+                    android:id="@+id/yAxisLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textSize="@dimen/date_time_size" />
+            </LinearLayout>
 
             <android.support.v7.widget.ButtonBarLayout
                 android:id="@+id/dateBtnBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:divider="?android:attr/dividerHorizontal"
                 android:orientation="horizontal"
                 android:showDividers="middle"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/seekBar">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <Button
                     android:id="@+id/btnPickAll"
@@ -152,52 +189,6 @@
                     android:onClick="@{() -> viewModel.onBtnClickDay()}"
                     android:text="@string/last_day" />
             </android.support.v7.widget.ButtonBarLayout>
-            <!--<LinearLayout-->
-            <!--android:id="@+id/dateTextDisplays"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/dateBtnBar"-->
-            <!--android:baselineAligned="false">-->
-            <!--<LinearLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:orientation="vertical"-->
-            <!--&gt;-->
-
-            <!--<TextView-->
-            <!--android:textAlignment="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/label_date_start"/>-->
-            <!--<TextView-->
-            <!--android:textAlignment="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/placeholder_date_start"/>-->
-            <!--</LinearLayout>-->
-            <!--<LinearLayout-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:orientation="vertical"-->
-            <!--&gt;-->
-            <!--<TextView-->
-            <!--android:textAlignment="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/label_date_end"/>-->
-            <!--<TextView-->
-            <!--android:textAlignment="center"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/placeholder_date_end"/>-->
-            <!--</LinearLayout>-->
-            <!--</LinearLayout>-->
-
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

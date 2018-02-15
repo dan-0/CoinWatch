@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="date_time_size">15sp</dimen>
     <dimen name="price_label_size">20sp</dimen>
     <dimen name="price_font_size">30sp</dimen>
 </resources>

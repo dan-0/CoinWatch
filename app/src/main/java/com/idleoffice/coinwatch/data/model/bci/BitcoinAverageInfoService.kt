@@ -2,8 +2,10 @@ package com.idleoffice.coinwatch.data.model.bci
 
 import com.idleoffice.coinwatch.BuildConfig
 import com.idleoffice.coinwatch.toHexString
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.*
@@ -15,7 +17,6 @@ interface BitcoinAverageInfoService {
     companion object {
         internal const val BITCOIN_INFO_URL = "https://apiv2.bitcoinaverage.com/"
 
-        // TODO reimplement when this all one day fails. The server is currently not caring about authentication, and is actively denying it
         fun generateKey() : @AuthToken String {
             val time = Date().time
             var payload = time.toString() + "." + BuildConfig.bitcoinaveragePublicKey
@@ -55,4 +56,8 @@ interface BitcoinAverageInfoService {
             @Query("period") period : @Period String
 
     ) : Call<List<BitcoinAverageInfo>>
+
+    @GET("indices/global/ticker/short?crypto=BTC&fiat=USD")
+    fun getCurrentPrice(@Header("X-signature") token : @AuthToken String) :
+            Observable<Map<String, BitcoinAverageCurrent>>
 }
