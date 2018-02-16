@@ -5,6 +5,6 @@ interface MainNavigator {
     fun handleError(t : Throwable)
     fun displayError(errorMsg : String)
     fun updatePrice(price : String)
-    fun xAxisLabel(label : CharSequence)
-    fun valueLabel(label : CharSequence)
+    fun xAxisLabel(date : CharSequence)
+    fun yAxisLabel(value : CharSequence)
 }

@@ -42,14 +42,7 @@ class MainViewModel(
                 BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value)
 
         doGraphDataCall(call, getApplication<MainApp>().getString(R.string.last_day))
-
-        val priceGetter = Observable.interval(0,10, TimeUnit.SECONDS)
-                .flatMap { bitcoinAverageInfoService.getCurrentPrice(BitcoinAverageInfoService.generateKey()) }
-                .observeOn(schedulerProvider.ui())
-                .subscribe({n -> currentPrice.value = n["BTCUSD"]}, {e -> Timber.e(e)})
-        rxObservers.add(priceGetter)
-
-
+        doGetCurrentPrice()
     }
 
     override fun onCleared() {
@@ -80,8 +73,15 @@ class MainViewModel(
                 })
     }
 
-    private fun doGetCurrentPrice(call : Call<Map<String, BitcoinAverageInfo>>) {
-
+    private fun doGetCurrentPrice() {
+        val priceGetter = Observable.interval(0,10, TimeUnit.SECONDS)
+                .flatMap { bitcoinAverageInfoService.getCurrentPrice(BitcoinAverageInfoService.generateKey())
+                        .onErrorResumeNext {t: Throwable ->
+                            Timber.e(t, "Error attempting to get current price, trying again.")
+                            Observable.empty()} }
+                .observeOn(schedulerProvider.ui())
+                .subscribe({n -> currentPrice.value = n["BTCUSD"]}, {e -> Timber.e(e)})
+        rxObservers.add(priceGetter)
     }
 
     fun onBtnClickAllTime() {
@@ -126,7 +126,7 @@ class MainViewModel(
                 val date = fromFormatter.parseObject(time)
                 toFormatter.format(date)
                 navigator?.xAxisLabel(toFormatter.format(date) as CharSequence)
-                navigator?.valueLabel(String.format("$ %s", e.y.toString()))
+                navigator?.yAxisLabel(String.format("$ %s", e.y.toString()))
             }
         }
     }
