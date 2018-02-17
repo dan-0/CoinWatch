@@ -8,16 +8,12 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.idleoffice.coinwatch.MainApp
 import com.idleoffice.coinwatch.R
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
-import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import com.idleoffice.coinwatch.ui.base.BaseViewModel
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,44 +29,39 @@ class MainViewModel(
 
     val graphData = MutableLiveData<CoinLineData>()
     val currentPrice = MutableLiveData<BitcoinAverageCurrent>()
-    val rxObservers = ArrayList<Disposable>()
+    var graphDataCall = object : Disposable {
+        override fun isDisposed(): Boolean {return true}
+        override fun dispose() {}
+    }
 
     init {
         // initialize to Daily
-        val call = bitcoinAverageInfoService.getInfo(
+        doGraphDataCall(
                 BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value)
+                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value,
+                getApplication<MainApp>().getString(R.string.last_day))
 
-        doGraphDataCall(call, getApplication<MainApp>().getString(R.string.last_day))
         doGetCurrentPrice()
     }
 
-    override fun onCleared() {
-        rxObservers
-                .filterNot { it.isDisposed }
-                .forEach { it.dispose() }
-        super.onCleared()
-    }
+    private fun doGraphDataCall(symbol : String, period : String, sampleName : String) {
+        if(!graphDataCall.isDisposed) {
+            Timber.d("Call already in progress, dumping previous call")
+            graphDataCall.dispose()
+        }
 
-    private fun doGraphDataCall(call : Call<List<BitcoinAverageInfo>>?, sampleName : String) {
-        call?.enqueue(
-                object : Callback<List<BitcoinAverageInfo>> {
-                    override fun onFailure(call: Call<List<BitcoinAverageInfo>>?, t: Throwable?) {
-                        Timber.e(t, "Failed call to service")
-                        val errorMsg = getApplication<MainApp>().getString(R.string.error_from_server)
-                        navigator?.displayError(errorMsg)
-                    }
-
-                    override fun onResponse(call: Call<List<BitcoinAverageInfo>>?, response: Response<List<BitcoinAverageInfo>>?) {
-                        val body = response?.body()
-                        if (body == null) {
-                            Timber.e("Got response, but body null")
-                            return
-                        }
-                        graphData.value = CoinLineData(body.reversed(), sampleName)
-                    }
-
-                })
+        graphDataCall = bitcoinAverageInfoService.getHistoricalPrice(symbol = symbol, period = period)
+                            .subscribeOn(schedulerProvider.io())
+                            .observeOn(schedulerProvider.ui())
+                            .subscribe(
+                                    {n ->
+                                        graphData.value = CoinLineData(n.reversed(), sampleName)},
+                                    {e ->
+                                        Timber.e(e, "Error getting graph data")
+                                        val errorMsg = getApplication<MainApp>().getString(R.string.error_from_server)
+                                        navigator?.displayError(errorMsg)
+                                    })
+        compositeDisposable.add(graphDataCall)
     }
 
     private fun doGetCurrentPrice() {
@@ -81,38 +72,37 @@ class MainViewModel(
                             Observable.empty()} }
                 .observeOn(schedulerProvider.ui())
                 .subscribe({n -> currentPrice.value = n["BTCUSD"]}, {e -> Timber.e(e)})
-        rxObservers.add(priceGetter)
+        compositeDisposable.add(priceGetter)
     }
 
     fun onBtnClickAllTime() {
         Timber.d("All time button clicked")
-        val call = bitcoinAverageInfoService.getInfo(
+        doGraphDataCall(
                 BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.ALL_TIME.value)
-        doGraphDataCall(call, getApplication<MainApp>().getString(R.string.all_time))
+                BitcoinAverageInfoService.Companion.PeriodUnit.ALL_TIME.value,
+                getApplication<MainApp>().getString(R.string.all_time))
     }
 
 
     fun onBtnClickMonth() {
         Timber.d("Month button clicked")
-        val call = bitcoinAverageInfoService.getInfo(
+        doGraphDataCall(
                 BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.MONTHLY.value)
-        doGraphDataCall(call, getApplication<MainApp>().getString(R.string.last_month))
+                BitcoinAverageInfoService.Companion.PeriodUnit.MONTHLY.value,
+                getApplication<MainApp>().getString(R.string.last_month))
     }
 
     fun onBtnClickDay() {
         Timber.d("Day button clicked")
-        val call = bitcoinAverageInfoService.getInfo(
+        doGraphDataCall(
                 BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value)
-        doGraphDataCall(call, getApplication<MainApp>().getString(R.string.last_day))
+                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value,
+                getApplication<MainApp>().getString(R.string.last_day))
     }
 
     fun onChartValueSelectedListener() : OnChartValueSelectedListener {
         return object : OnChartValueSelectedListener {
-            override fun onNothingSelected() {
-            }
+            override fun onNothingSelected() {}
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val cf = graphData.value ?: return
                 if (e == null) {

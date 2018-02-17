@@ -3,7 +3,6 @@ package com.idleoffice.coinwatch.data.model.bci
 import com.idleoffice.coinwatch.BuildConfig
 import com.idleoffice.coinwatch.toHexString
 import io.reactivex.Observable
-import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -51,11 +50,10 @@ interface BitcoinAverageInfoService {
     }
 
     @GET("indices/local/history/{symbol}")
-    fun getInfo(
+    fun getHistoricalPrice(
             @Path("symbol") symbol: @Symbol String,
             @Query("period") period : @Period String
-
-    ) : Call<List<BitcoinAverageInfo>>
+    ) : Observable<List<BitcoinAverageInfo>>
 
     @GET("indices/global/ticker/short?crypto=BTC&fiat=USD")
     fun getCurrentPrice(@Header("X-signature") token : @AuthToken String) :
