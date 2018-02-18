@@ -7,16 +7,14 @@ import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.RelativeLayout.CENTER_IN_PARENT
+import android.widget.FrameLayout
 import dagger.android.AndroidInjection
 import timber.log.Timber
 
 
 abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCompatActivity() {
 
-    private var progressBar : ProgressBar? = null
+    private var progressBarFrame : FrameLayout? = null
     var viewDataBinding : T? = null
     var viewModel : V? = null
 
@@ -39,20 +37,17 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
     }
 
     fun showLoading() {
-        if(progressBar == null) {
-            progressBar = ProgressBar(this, null, android.R.attr.progressBarStyle)
-            val params = RelativeLayout.LayoutParams(100, 100)
-            params.addRule(CENTER_IN_PARENT)
-            addContentView(progressBar, params)
+        if(progressBarFrame == null) {
+            progressBarFrame = getProgressBarFrame() ?: return
         }
-
+        Timber.d("Showing progress bar.")
         window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
-        progressBar?.visibility = View.VISIBLE
+        progressBarFrame?.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        progressBar?.visibility = View.GONE
-
+        progressBarFrame?.visibility = View.GONE
+        Timber.d("Hiding progress bar.")
         window.clearFlags(FLAG_NOT_TOUCHABLE)
     }
 
@@ -67,6 +62,10 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
      *      The variable ID
      */
     abstract fun getBindingVariable() : Int
+
+    open fun getProgressBarFrame() : FrameLayout? {
+        return null
+    }
 
     /**
      * @return

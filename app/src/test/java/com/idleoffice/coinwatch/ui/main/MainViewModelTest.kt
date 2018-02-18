@@ -103,7 +103,6 @@ internal class MainViewModelTest {
                 app.getString(R.string.last_day))
 
         verify(subject, times(1)).doGetCurrentPrice()
-
     }
 
     @Test
@@ -111,6 +110,9 @@ internal class MainViewModelTest {
         val baiList = gcHelper.baiList
         val sampleName = gcHelper.sampleName
         val stubObservable : Observable<List<BitcoinAverageInfo>> = Observable.just(baiList)
+
+        val mockNavigator = mock<MainNavigator>()
+        subject.navigator = mockNavigator
 
         whenever(bitcoinAverageInfoService.getHistoricalPrice(any(), any()))
                 .thenReturn(stubObservable)
@@ -127,6 +129,7 @@ internal class MainViewModelTest {
 
         subject.doGraphDataCall(gcHelper.symbol, gcHelper.period, sampleName)
         verify(observer).invoke(any())
+        verify(mockNavigator).showLoading()
     }
 
     @Test
@@ -193,9 +196,6 @@ internal class MainViewModelTest {
 
     @Test
     fun doGetCurrentPriceOnError() {
-
-
-
         val ts = TestScheduler()
         val period = 10L
         setupGetCurrentPrice(ts, period)

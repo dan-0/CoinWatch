@@ -50,7 +50,7 @@ class MainViewModel(
             Timber.d("Call already in progress, dumping previous call")
             graphDataCall.dispose()
         }
-
+        navigator?.showLoading()
         graphDataCall = bitcoinAverageInfoService.getHistoricalPrice(symbol = symbol, period = period)
                             .subscribeOn(schedulerProvider.io())
                             .observeOn(schedulerProvider.ui())
@@ -61,6 +61,7 @@ class MainViewModel(
                                         Timber.e(e, "Error getting graph data")
                                         val errorMsg = getApplication<MainApp>().getString(R.string.error_from_server)
                                         navigator?.displayError(errorMsg)
+                                        navigator?.hideLoading()
                                     })
         compositeDisposable.add(graphDataCall)
     }

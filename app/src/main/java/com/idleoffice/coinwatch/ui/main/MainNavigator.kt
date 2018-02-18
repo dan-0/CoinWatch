@@ -7,4 +7,6 @@ interface MainNavigator {
     fun updatePrice(price : String)
     fun xAxisLabel(date : CharSequence)
     fun yAxisLabel(value : CharSequence)
+    fun showLoading()
+    fun hideLoading()
 }

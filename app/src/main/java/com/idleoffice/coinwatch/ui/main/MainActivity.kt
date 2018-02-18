@@ -6,8 +6,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.widget.FrameLayout
 import android.widget.Toast
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.idleoffice.coinwatch.BR
 import com.idleoffice.coinwatch.R
@@ -19,6 +19,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.progress_bar_frame_layout.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     @Inject
     lateinit var fragmentDispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
-    var activityMainBinding : ActivityMainBinding? = null
+    private var activityMainBinding : ActivityMainBinding? = null
 
     var mainViewModel : MainViewModel? = null
 
@@ -45,27 +46,30 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     }
 
     private fun setGraphObserver() {
-        val graphDataObserver = Observer<CoinLineData> {
-            if (it == null) {
-                return@Observer
+        val graphDataObserver = Observer<CoinLineData> @Synchronized {
+            if (it != null) {
+                Timber.d("Detected graph data change")
+                updateChart(it)
             }
-            Timber.d("Detected graph data change")
-            updateChart(it)
+            hideLoading()
         }
 
         mainViewModel?.graphData?.observe(this, graphDataObserver)
     }
 
     private fun setPriceObserver() {
-        val priceDataObserver = Observer<BitcoinAverageCurrent> {
-            if (it == null) {
-                return@Observer
+        val priceDataObserver = Observer<BitcoinAverageCurrent> @Synchronized {
+            if (it != null) {
+                Timber.d("Detected graph data change")
+                updatePrice(String.format("%.2f", it.last))
             }
-            Timber.d("Detected graph data change")
-            updatePrice(String.format("%.2f", it.last))
         }
 
         mainViewModel?.currentPrice?.observe(this, priceDataObserver)
+    }
+
+    override fun getProgressBarFrame(): FrameLayout? {
+        return progressBarFrame
     }
 
     override fun getActivityViewModel(): MainViewModel {
@@ -97,7 +101,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
     }
 
     private fun initChart() {
-        val chart = findViewById<LineChart>(R.id.chart)
         chart.setOnChartValueSelectedListener(mainViewModel?.onChartValueSelectedListener())
         chart.axisLeft.textColor = ContextCompat.getColor(this, R.color.textPrimary)
     }

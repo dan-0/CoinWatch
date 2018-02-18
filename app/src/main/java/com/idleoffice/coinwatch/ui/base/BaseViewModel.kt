@@ -29,7 +29,7 @@ abstract class BaseViewModel<T>(app : Application,
         }
     }
 
-    protected abstract fun initialize()
+    protected open fun initialize() {}
 
     override fun onCleared() {
         compositeDisposable.dispose()

@@ -2,7 +2,7 @@ package com.idleoffice.coinwatch
 
 private val HEX_CHARS = "0123456789abcdef".toCharArray()
 
-fun ByteArray.toHexString() : String{
+fun ByteArray.toHexString() : String {
     val result = StringBuffer()
 
     forEach {
@@ -14,19 +14,4 @@ fun ByteArray.toHexString() : String{
     }
 
     return result.toString()
-}
-
-fun String.hexStringToByteArray() : ByteArray {
-
-    val result = ByteArray(length / 2)
-
-    for (i in 0 until length step 2) {
-        val firstIndex = HEX_CHARS.indexOf(this[i]);
-        val secondIndex = HEX_CHARS.indexOf(this[i + 1]);
-
-        val octet = firstIndex.shl(4).or(secondIndex)
-        result.set(i.shr(1), octet.toByte())
-    }
-
-    return result
 }

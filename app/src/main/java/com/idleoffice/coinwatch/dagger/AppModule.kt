@@ -1,7 +1,5 @@
 package com.idleoffice.coinwatch.dagger
 
-import android.app.Application
-import android.content.Context
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.AppSchedulerProvider
 import com.idleoffice.coinwatch.rx.SchedulerProvider
@@ -17,11 +15,11 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-    @Provides
-    @Singleton
-    fun provideApplication(application : Application) : Context {
-        return application
-    }
+//    @Provides
+//    @Singleton
+//    fun provideApplication(application : Application) : Context {
+//        return application
+//    }
 
     @Provides
     fun provideSchedulerProvider() : SchedulerProvider {
