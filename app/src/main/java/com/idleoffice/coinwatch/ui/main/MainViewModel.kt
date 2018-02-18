@@ -9,6 +9,8 @@ import com.idleoffice.coinwatch.MainApp
 import com.idleoffice.coinwatch.R
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfoService
+import com.idleoffice.coinwatch.data.model.bci.PeriodUnit
+import com.idleoffice.coinwatch.data.model.bci.SymbolPair
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import com.idleoffice.coinwatch.ui.base.BaseViewModel
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
@@ -27,24 +29,23 @@ class MainViewModel(
         private var bitcoinAverageInfoService: BitcoinAverageInfoService)
     : BaseViewModel<MainNavigator>(app, schedulerProvider) {
 
-    val graphData = MutableLiveData<CoinLineData>()
-    val currentPrice = MutableLiveData<BitcoinAverageCurrent>()
-    var graphDataCall = object : Disposable {
-        override fun isDisposed(): Boolean {return true}
-        override fun dispose() {}
-    }
-
-    init {
-        // initialize to Daily
+    override fun initialize() {
         doGraphDataCall(
-                BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value,
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.DAILY.value,
                 getApplication<MainApp>().getString(R.string.last_day))
 
         doGetCurrentPrice()
     }
 
-    private fun doGraphDataCall(symbol : String, period : String, sampleName : String) {
+    val graphData = MutableLiveData<CoinLineData>()
+    val currentPrice = MutableLiveData<BitcoinAverageCurrent>()
+    var graphDataCall = object : Disposable {
+        override fun isDisposed(): Boolean {return true}
+        override fun dispose() {throw NotImplementedError("Not implemented!")}
+    }
+
+    fun doGraphDataCall(symbol : String, period : String, sampleName : String) {
         if(!graphDataCall.isDisposed) {
             Timber.d("Call already in progress, dumping previous call")
             graphDataCall.dispose()
@@ -64,12 +65,27 @@ class MainViewModel(
         compositeDisposable.add(graphDataCall)
     }
 
-    private fun doGetCurrentPrice() {
-        val priceGetter = Observable.interval(0,10, TimeUnit.SECONDS)
+    internal fun getObservableInterval() : Observable<Long> {
+        return Observable.interval(0,10, TimeUnit.SECONDS)
+    }
+
+    fun doGetCurrentPrice() {
+        val priceGetter = getObservableInterval()
                 .flatMap { bitcoinAverageInfoService.getCurrentPrice(BitcoinAverageInfoService.generateKey())
                         .onErrorResumeNext {t: Throwable ->
-                            Timber.e(t, "Error attempting to get current price, trying again.")
+                            val msg = "Error attempting to get current price, trying again."
+                            var logMessage = ""
+                            if(t.message != null) {
+                                logMessage = t.message!!
+                            }
+
+                            if(logMessage.contains("Unauthorized")) {
+                                Timber.w(t, msg)
+                            } else {
+                                Timber.e(t, msg)
+                            }
                             Observable.empty()} }
+                .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({n -> currentPrice.value = n["BTCUSD"]}, {e -> Timber.e(e)})
         compositeDisposable.add(priceGetter)
@@ -78,8 +94,8 @@ class MainViewModel(
     fun onBtnClickAllTime() {
         Timber.d("All time button clicked")
         doGraphDataCall(
-                BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.ALL_TIME.value,
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.ALL_TIME.value,
                 getApplication<MainApp>().getString(R.string.all_time))
     }
 
@@ -87,31 +103,40 @@ class MainViewModel(
     fun onBtnClickMonth() {
         Timber.d("Month button clicked")
         doGraphDataCall(
-                BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.MONTHLY.value,
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.MONTHLY.value,
                 getApplication<MainApp>().getString(R.string.last_month))
     }
 
     fun onBtnClickDay() {
         Timber.d("Day button clicked")
         doGraphDataCall(
-                BitcoinAverageInfoService.Companion.SymbolPair.BTC_USD.value,
-                BitcoinAverageInfoService.Companion.PeriodUnit.DAILY.value,
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.DAILY.value,
                 getApplication<MainApp>().getString(R.string.last_day))
     }
 
     fun onChartValueSelectedListener() : OnChartValueSelectedListener {
         return object : OnChartValueSelectedListener {
-            override fun onNothingSelected() {}
+            override fun onNothingSelected() {throw NotImplementedError("Not implemented!")}
             override fun onValueSelected(e: Entry?, h: Highlight?) {
-                val cf = graphData.value ?: return
-                if (e == null) {
+                val cf = graphData.value
+
+                if(cf == null) {
+                    Timber.e("Graph data was null")
                     return
                 }
+
+                if (e == null) {
+                    Timber.w("Entry value was null")
+                    return
+                }
+
                 val time = cf.bcInfo[e.x.roundToInt()].time
                 val fromPattern =  "yyyy-MM-dd HH:mm:ss"
-                val toPattern = "dd MMM yyy, HH:mm"
                 val fromFormatter = SimpleDateFormat(fromPattern, Locale.getDefault())
+
+                val toPattern = "dd MMM yyyy, HH:mm"
                 val toFormatter = SimpleDateFormat(toPattern, Locale.getDefault())
                 val date = fromFormatter.parseObject(time)
                 toFormatter.format(date)

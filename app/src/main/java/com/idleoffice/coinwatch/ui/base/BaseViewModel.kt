@@ -16,6 +16,20 @@ abstract class BaseViewModel<T>(app : Application,
 
     val isLoading = ObservableBoolean(false)
 
+    private var initialized = false
+
+    /**
+     * A one time initialization function to help with testing. `init{}` isn't as controllable
+     * in unit tests. This requires a view to exist in order to initialize the data
+     */
+    fun viewInitialize() {
+        if(!initialized) {
+            initialized = true
+            initialize()
+        }
+    }
+
+    protected abstract fun initialize()
 
     override fun onCleared() {
         compositeDisposable.dispose()

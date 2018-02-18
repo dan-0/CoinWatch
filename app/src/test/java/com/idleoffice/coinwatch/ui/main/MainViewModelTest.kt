@@ -2,9 +2,9 @@ package com.idleoffice.coinwatch.ui.main
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.util.Log
+import com.github.mikephil.charting.data.Entry
 import com.idleoffice.coinwatch.MainApp
 import com.idleoffice.coinwatch.R
 import com.idleoffice.coinwatch.data.model.bci.*
@@ -16,7 +16,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
-import junit.framework.Assert.assertEquals
+import junit.framework.Assert.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,6 +33,7 @@ internal class MainViewModelTest {
     var rule = InstantTaskExecutorRule()
 
     @Mock
+    private
     lateinit var app : MainApp
 
     private var schedulerProvider = TrampolineSchedulerProvider()
@@ -41,12 +42,12 @@ internal class MainViewModelTest {
     private
     lateinit var bitcoinAverageInfoService: BitcoinAverageInfoService
 
-    lateinit var subject : MainViewModel
+    private lateinit var subject : MainViewModel
 
     private val gcHelper = GraphCallHelper()
     private val cpHelper = CurrentPriceHelper()
 
-    val errorMsg = "testErrorMsg"
+    private val errorMsg = "testErrorMsg"
 
     @Before
     fun setUp() {
@@ -61,10 +62,52 @@ internal class MainViewModelTest {
 
     @After
     fun tearDown() {
+        Timber.uprootAll()
     }
 
     @Test
-    fun doGraphDataCallSuccess() {
+    fun testAssertNonFunctional() {
+        var errorOccurred = false
+        try {
+            subject.graphDataCall.dispose()
+        } catch (e : NotImplementedError) {
+            errorOccurred = true
+        }
+
+        assertTrue(errorOccurred)
+    }
+
+    @Test
+    fun testInitilization() {
+        /*
+            Called methods are getting tested elsewhere, we're just going to ensure the
+            initialization methods keep getting called here.
+         */
+        subject = spy(MainViewModel(app, schedulerProvider, bitcoinAverageInfoService))
+
+        doNothing().whenever(subject).doGraphDataCall(
+                any(),
+                any(),
+                any())
+
+        doNothing().whenever(subject).doGetCurrentPrice()
+
+        subject.viewInitialize()
+
+        // Calling a second time to ensure that the below are only invoked once still
+        subject.viewInitialize()
+
+        verify(subject, times(1)).doGraphDataCall(
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.DAILY.value,
+                app.getString(R.string.last_day))
+
+        verify(subject, times(1)).doGetCurrentPrice()
+
+    }
+
+    @Test
+    fun doGraphDataCallHappy() {
         val baiList = gcHelper.baiList
         val sampleName = gcHelper.sampleName
         val stubObservable : Observable<List<BitcoinAverageInfo>> = Observable.just(baiList)
@@ -74,16 +117,16 @@ internal class MainViewModelTest {
 
         val observer = mock<(CoinLineData) -> Unit>()
 
-        val lifecycle = LifecycleRegistry(mock<LifecycleOwner>())
+        val lifecycle = LifecycleRegistry(mock())
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         subject.graphData.observe({lifecycle}){
-            assert(it!!.equals(CoinLineData(baiList, sampleName)))
+            assert(it!! == CoinLineData(baiList, sampleName))
             observer.invoke(it)
         }
 
         subject.doGraphDataCall(gcHelper.symbol, gcHelper.period, sampleName)
-        verify(observer).invoke(any<CoinLineData>())
+        verify(observer).invoke(any())
     }
 
     @Test
@@ -93,7 +136,7 @@ internal class MainViewModelTest {
         whenever(bitcoinAverageInfoService.getHistoricalPrice(any(), any()))
                 .thenReturn(stubObservable)
 
-        subject.navigator = mock<MainNavigator>()
+        subject.navigator = mock()
 
         subject.doGraphDataCall(gcHelper.symbol, gcHelper.period, sampleName)
 
@@ -127,12 +170,12 @@ internal class MainViewModelTest {
         val v1 = cpHelper.cpMap
         val stubObservable : Observable<Map<String, BitcoinAverageCurrent>>
                 = Observable.just(v1)
-        whenever(bitcoinAverageInfoService.getCurrentPrice(any<String>()))
+        whenever(bitcoinAverageInfoService.getCurrentPrice(any()))
                 .thenReturn(stubObservable)
 
         val observer = mock<(BitcoinAverageCurrent) -> Unit>()
 
-        val lifecycle = LifecycleRegistry(mock<LifecycleOwner>())
+        val lifecycle = LifecycleRegistry(mock())
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         var timesCalled = 0
@@ -151,6 +194,8 @@ internal class MainViewModelTest {
     @Test
     fun doGetCurrentPriceOnError() {
 
+
+
         val ts = TestScheduler()
         val period = 10L
         setupGetCurrentPrice(ts, period)
@@ -166,7 +211,7 @@ internal class MainViewModelTest {
         val so4 : Observable<Map<String, BitcoinAverageCurrent>>
                 = Observable.error(Exception("errr"))
 
-        whenever(bitcoinAverageInfoService.getCurrentPrice(any<String>()))
+        whenever(bitcoinAverageInfoService.getCurrentPrice(any()))
                 .thenReturn(so1)
                 .thenReturn(so2)
                 .thenReturn(so3)
@@ -176,19 +221,24 @@ internal class MainViewModelTest {
 
         val observer = mock<(BitcoinAverageCurrent) -> Unit>()
 
-        val lifecycle = LifecycleRegistry(mock<LifecycleOwner>())
+        val lifecycle = LifecycleRegistry(mock())
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
+        val onErrorInErrorMsg = "testExecption"
         var timesCalled = 0
         subject.currentPrice.observe({lifecycle}){
             assert(it!! == cpHelper.cpMap["BTCUSD"])
             observer.invoke(it)
             timesCalled++
+            if(timesCalled > 2) {
+                throw Exception(onErrorInErrorMsg)
+            }
         }
 
         var nullErrorOccured = false
         var unauthErrorOccured = false
         var otherErrorOccurred = false
+        var onErrorInErrorResumeNext = false
         Timber.plant(object : Timber.Tree() {
             override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
                 var msg = ""
@@ -199,14 +249,26 @@ internal class MainViewModelTest {
                 if(msg == "") {
                     nullErrorOccured = true
                 }
+
                 if(msg.contains("Unauthorized") && priority == Log.WARN) {
                     unauthErrorOccured = true
                 }
+
                 if(nullErrorOccured && unauthErrorOccured) {
                     otherErrorOccurred = true
                 }
+
+                if(msg == onErrorInErrorMsg) {
+                    onErrorInErrorResumeNext = true
+                }
             }
         })
+
+        // sanity check
+        assertEquals(false, nullErrorOccured)
+        assertEquals(false, unauthErrorOccured)
+        assertEquals(false, otherErrorOccurred)
+        assertEquals(false, onErrorInErrorResumeNext)
 
         subject.doGetCurrentPrice()
         ts.advanceTimeBy(period * 5L, TimeUnit.SECONDS)
@@ -214,22 +276,97 @@ internal class MainViewModelTest {
         assertEquals(true, nullErrorOccured)
         assertEquals(true, unauthErrorOccured)
         assertEquals(true, otherErrorOccurred)
+        assertEquals(true, onErrorInErrorResumeNext)
     }
 
     @Test
     fun onBtnClickAllTime() {
+        setupOnBtnClickSpy()
+        subject.onBtnClickAllTime()
+        verify(subject).doGraphDataCall(
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.ALL_TIME.value,
+                app.getString(R.string.all_time))
     }
 
     @Test
     fun onBtnClickMonth() {
+        setupOnBtnClickSpy()
+        subject.onBtnClickMonth()
+        verify(subject).doGraphDataCall(
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.MONTHLY.value,
+                app.getString(R.string.last_month))
     }
 
     @Test
     fun onBtnClickDay() {
+        setupOnBtnClickSpy()
+        subject.onBtnClickDay()
+        verify(subject).doGraphDataCall(
+                SymbolPair.BTC_USD.value,
+                PeriodUnit.DAILY.value,
+                app.getString(R.string.last_day))
     }
 
     @Test
-    fun onChartValueSelectedListener() {
+    fun onChartValueSelectedListenerHappy() {
+        val listener = subject.onChartValueSelectedListener()
+        subject.graphData.value = CoinLineData(gcHelper.baiList, gcHelper.sampleName)
+
+        subject.navigator = mock()
+
+        val e = Entry(0f, 1234.56f)
+
+        listener.onValueSelected(e, null)
+        verify(subject.navigator)!!.xAxisLabel("01 Jan 2017, 01:23")
+        verify(subject.navigator)!!.yAxisLabel("$ 1234.56")
+
+        var errorOccured = false
+        try {
+            listener.onNothingSelected()
+        } catch (e : NotImplementedError) {
+            errorOccured = true
+        }
+
+        assertTrue(errorOccured)
+    }
+
+    @Test
+    fun onChartValueSelectedListenerNullValues() {
+        val listener = subject.onChartValueSelectedListener()
+
+        var nullGraphDataValue = false
+        var nullEntry = false
+
+        Timber.plant(object : Timber.Tree() {
+            override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+                when(message) {
+                    "Graph data was null" -> nullGraphDataValue = true
+                    "Entry value was null" -> nullEntry = true
+                }
+            }
+        })
+
+        assertFalse(nullGraphDataValue)
+        assertFalse(nullEntry)
+
+        subject.graphData.value = CoinLineData(gcHelper.baiList, gcHelper.sampleName)
+        // Assert that we catch a null entry
+        listener.onValueSelected(null, null)
+        assertFalse(nullGraphDataValue)
+        assertTrue(nullEntry)
+
+        subject.graphData.value = null
+        listener.onValueSelected(null, null)
+        assertTrue(nullGraphDataValue)
+        assertTrue(nullEntry)
+
+    }
+
+    private fun setupOnBtnClickSpy() {
+        subject = spy(MainViewModel(app, schedulerProvider, bitcoinAverageInfoService))
+        doNothing().whenever(subject).doGraphDataCall(any(), any(), any())
     }
 
     private fun setupGetCurrentPrice(ts : TestScheduler, period : Long) {
@@ -245,16 +382,16 @@ internal class MainViewModelTest {
         val period = PeriodUnit.ALL_TIME.value
         val sampleName = "testSampleName"
 
-        val baiList = arrayListOf<BitcoinAverageInfo>(
-                BitcoinAverageInfo("2017-01-01", "1234.56"),
-                BitcoinAverageInfo("2017-01-02", "1234.567"))
+        val baiList = arrayListOf(
+                BitcoinAverageInfo("2017-01-01 01:23:45", "1234.56"),
+                BitcoinAverageInfo("2017-01-02 01:23:46", "1234.567"))
     }
 
     class CurrentPriceHelper {
         val cpMap = mapOf("BTCUSD" to BitcoinAverageCurrent(last = 1234.11, timestamp = 1518905972))
     }
 
-    class TestSchedulerProvider(var scheduler : TestScheduler) : SchedulerProvider {
+    class TestSchedulerProvider(private var scheduler : TestScheduler) : SchedulerProvider {
         override fun ui(): TestScheduler {return scheduler}
         override fun io(): TestScheduler {return scheduler}
     }

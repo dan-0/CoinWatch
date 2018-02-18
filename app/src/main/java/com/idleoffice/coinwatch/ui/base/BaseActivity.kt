@@ -29,6 +29,7 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
             viewModel = getActivityViewModel()
         }
         initDataBinding()
+        viewModel?.viewInitialize()
     }
 
     private fun initDataBinding() {
