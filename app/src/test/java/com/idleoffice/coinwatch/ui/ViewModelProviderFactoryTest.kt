@@ -3,8 +3,8 @@ package com.idleoffice.coinwatch.ui
 import com.idleoffice.coinwatch.ui.base.BaseViewModel
 import com.idleoffice.coinwatch.ui.main.MainNavigator
 import com.nhaarman.mockito_kotlin.mock
-import junit.framework.Assert.assertNotNull
-import junit.framework.Assert.assertTrue
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 

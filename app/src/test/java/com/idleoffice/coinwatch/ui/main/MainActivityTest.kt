@@ -6,7 +6,7 @@ import com.idleoffice.coinwatch.R
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
-import junit.framework.Assert.*
+import junit.framework.TestCase.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_bar_frame_layout.*
 import org.junit.Before
@@ -65,7 +65,7 @@ class MainActivityTest {
 
         subject.showLoading()
         // Assert we are showing a loading progressbar
-        assertEquals(View.VISIBLE, subject.progressBarFrame.visibility)
+        assertEquals(View.VISIBLE, subject.progressBar.visibility)
         graphData.value = cld
 
         assertEquals(testSampleName, subject.chart.description.text)
@@ -96,7 +96,7 @@ class MainActivityTest {
                 cld.getLineData().dataSets[0].getEntryForIndex(1).y)
 
         // Assert progress bar is gone
-        assertEquals(View.GONE, subject.progressBarFrame.visibility)
+        assertEquals(View.GONE, subject.progressBar.visibility)
     }
 
 

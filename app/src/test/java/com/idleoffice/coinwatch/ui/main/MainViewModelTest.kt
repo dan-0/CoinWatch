@@ -16,7 +16,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
-import junit.framework.Assert.*
+import junit.framework.TestCase.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

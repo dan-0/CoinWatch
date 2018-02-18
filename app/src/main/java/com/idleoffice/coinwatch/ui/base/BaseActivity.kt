@@ -7,14 +7,14 @@ import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-import android.widget.FrameLayout
+import android.widget.ProgressBar
 import dagger.android.AndroidInjection
 import timber.log.Timber
 
 
 abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCompatActivity() {
 
-    private var progressBarFrame : FrameLayout? = null
+    private var progressBar: ProgressBar? = null
     var viewDataBinding : T? = null
     var viewModel : V? = null
 
@@ -37,16 +37,16 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
     }
 
     fun showLoading() {
-        if(progressBarFrame == null) {
-            progressBarFrame = getProgressBarFrame() ?: return
+        if(progressBar == null) {
+            progressBar = getProgressBar() ?: return
         }
         Timber.d("Showing progress bar.")
         window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
-        progressBarFrame?.visibility = View.VISIBLE
+        progressBar?.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        progressBarFrame?.visibility = View.GONE
+        progressBar?.visibility = View.GONE
         Timber.d("Hiding progress bar.")
         window.clearFlags(FLAG_NOT_TOUCHABLE)
     }
@@ -63,7 +63,7 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
      */
     abstract fun getBindingVariable() : Int
 
-    open fun getProgressBarFrame() : FrameLayout? {
+    open fun getProgressBar() : ProgressBar? {
         return null
     }
 
@@ -74,7 +74,7 @@ abstract class BaseActivity <T : ViewDataBinding, V : BaseViewModel<*>> : AppCom
     @LayoutRes
     abstract fun getLayoutId() : Int
 
-    fun performDependencyInjection() {
+    private fun performDependencyInjection() {
         AndroidInjection.inject(this)
     }
 }

@@ -3,8 +3,8 @@ package com.idleoffice.coinwatch.ui.base
 import com.idleoffice.coinwatch.ui.main.MainNavigator
 import com.nhaarman.mockito_kotlin.mock
 import io.reactivex.disposables.Disposable
-import junit.framework.Assert.assertFalse
-import junit.framework.Assert.assertTrue
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 /**

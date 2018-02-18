@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
-import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.github.mikephil.charting.components.Description
 import com.idleoffice.coinwatch.BR
@@ -68,8 +68,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(), MainNav
         mainViewModel?.currentPrice?.observe(this, priceDataObserver)
     }
 
-    override fun getProgressBarFrame(): FrameLayout? {
-        return progressBarFrame
+    override fun getProgressBar(): ProgressBar? {
+        return progressBar
     }
 
     override fun getActivityViewModel(): MainViewModel {

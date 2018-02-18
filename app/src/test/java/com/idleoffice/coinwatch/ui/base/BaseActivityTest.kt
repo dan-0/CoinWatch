@@ -3,7 +3,7 @@ package com.idleoffice.coinwatch.ui.base
 import com.idleoffice.coinwatch.databinding.ActivityMainBinding
 import com.idleoffice.coinwatch.ui.main.MainViewModel
 import com.nhaarman.mockito_kotlin.mock
-import junit.framework.Assert.assertNull
+import junit.framework.TestCase.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -12,7 +12,7 @@ import org.junit.Test
  */
 class BaseActivityTest {
 
-    lateinit var subject : BaseActivity<ActivityMainBinding, MainViewModel>
+    private lateinit var subject : BaseActivity<ActivityMainBinding, MainViewModel>
 
     @Before
     fun setup() {
@@ -30,7 +30,7 @@ class BaseActivityTest {
 
     @Test
     fun getProgressBarFrame() {
-        assertNull(subject.getProgressBarFrame())
+        assertNull(subject.getProgressBar())
     }
 
 }
