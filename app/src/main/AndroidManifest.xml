@@ -6,9 +6,9 @@
     <application
         android:allowBackup="true"
         android:name=".MainApp"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/coin_watch_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/coin_watch_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/CoinWatch">
         <activity android:name=".ui.main.MainActivity">

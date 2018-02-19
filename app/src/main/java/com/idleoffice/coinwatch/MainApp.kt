@@ -2,6 +2,8 @@ package com.idleoffice.coinwatch
 
 import android.app.Activity
 import android.app.Application
+import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.idleoffice.coinwatch.dagger.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -20,7 +22,17 @@ class MainApp : Application(), HasActivityInjector {
         if(BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
-            throw NotImplementedError("Release debugging not implemented")
+            Timber.plant(object : Timber.Tree() {
+                override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+                    when(priority) {
+                        Log.ERROR -> {
+                            Crashlytics.logException(t)
+                            Crashlytics.log(message)
+                        }
+                    }
+                }
+
+            })
         }
 
         DaggerAppComponent.builder()
