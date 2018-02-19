@@ -26,8 +26,10 @@ class MainApp : Application(), HasActivityInjector {
                 override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
                     when(priority) {
                         Log.ERROR -> {
-                            Crashlytics.logException(t)
-                            Crashlytics.log(message)
+                            if(t != null) {
+                                Crashlytics.logException(t)
+                            }
+                            Crashlytics.log(priority, tag, message)
                         }
                     }
                 }

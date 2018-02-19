@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         all {
@@ -61,7 +61,7 @@ dependencies {
 
     // Testing
     testImplementation "junit:junit:4.12"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:4.12"
+//    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.1.0"
     androidTestImplementation "com.android.support.test:runner:1.0.1"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.1"
     testImplementation "org.mockito:mockito-core:2.15.0"
@@ -79,14 +79,14 @@ dependencies {
     implementation "com.github.PhilJay:MPAndroidChart:v3.0.3"
 
     // Room
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    kapt "android.arch.persistence.room:compiler:$roomVersion"
+//    implementation "android.arch.persistence.room:runtime:$roomVersion"
+//    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
     // Java Rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7' // TODO is this needed?
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
-    implementation "android.arch.persistence.room:rxjava2:$roomVersion"
+//    implementation "android.arch.persistence.room:rxjava2:$roomVersion"
 
     // Dagger
     implementation "com.google.dagger:dagger:$daggerVersion"

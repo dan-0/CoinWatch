@@ -1,7 +1,7 @@
 package com.idleoffice.coinwatch.ui.main
 
 import com.idleoffice.coinwatch.MainApp
-import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfoService
+import com.idleoffice.coinwatch.retrofit.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import com.nhaarman.mockito_kotlin.mock
 import org.junit.Test

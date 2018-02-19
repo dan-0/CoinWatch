@@ -7,7 +7,11 @@ import android.util.Log
 import com.github.mikephil.charting.data.Entry
 import com.idleoffice.coinwatch.MainApp
 import com.idleoffice.coinwatch.R
-import com.idleoffice.coinwatch.data.model.bci.*
+import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
+import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
+import com.idleoffice.coinwatch.data.model.bci.PeriodUnit
+import com.idleoffice.coinwatch.data.model.bci.SymbolPair
+import com.idleoffice.coinwatch.retrofit.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
 import com.nhaarman.mockito_kotlin.*

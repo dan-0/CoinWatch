@@ -1,9 +1,11 @@
-package com.idleoffice.coinwatch.data.model.bci
+package com.idleoffice.coinwatch.retrofit.bci
 
 import com.idleoffice.coinwatch.BuildConfig
 import com.idleoffice.coinwatch.data.annotations.AuthToken
 import com.idleoffice.coinwatch.data.annotations.Period
 import com.idleoffice.coinwatch.data.annotations.Symbol
+import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
+import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
 import com.idleoffice.coinwatch.toHexString
 import io.reactivex.Observable
 import retrofit2.http.GET
