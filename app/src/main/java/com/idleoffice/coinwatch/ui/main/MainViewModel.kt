@@ -42,7 +42,7 @@ class MainViewModel(
     val currentPrice = MutableLiveData<BitcoinAverageCurrent>()
     var graphDataCall = object : Disposable {
         override fun isDisposed(): Boolean {return true}
-        override fun dispose() {throw NotImplementedError("Not implemented!")}
+        override fun dispose() {}
     }
 
     fun doGraphDataCall(symbol : String, period : String, sampleName : String) {
@@ -119,7 +119,7 @@ class MainViewModel(
 
     fun onChartValueSelectedListener() : OnChartValueSelectedListener {
         return object : OnChartValueSelectedListener {
-            override fun onNothingSelected() {throw NotImplementedError("Not implemented!")}
+            override fun onNothingSelected() {}
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val cf = graphData.value
 

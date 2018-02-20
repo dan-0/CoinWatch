@@ -71,14 +71,8 @@ internal class MainViewModelTest {
 
     @Test
     fun testAssertNonFunctional() {
-        var errorOccurred = false
-        try {
-            subject.graphDataCall.dispose()
-        } catch (e : NotImplementedError) {
-            errorOccurred = true
-        }
-
-        assertTrue(errorOccurred)
+        // Function should be empty, but run through it just in case something gets added that can cause an error
+        subject.graphDataCall.dispose()
     }
 
     @Test
@@ -326,14 +320,8 @@ internal class MainViewModelTest {
         verify(subject.navigator)!!.xAxisLabel("01 Jan 2017, 01:23")
         verify(subject.navigator)!!.yAxisLabel("$ 1234.56")
 
-        var errorOccured = false
-        try {
-            listener.onNothingSelected()
-        } catch (e : NotImplementedError) {
-            errorOccured = true
-        }
-
-        assertTrue(errorOccured)
+        // Function should be empty, but run through it just in case something gets added that can cause an error
+        listener.onNothingSelected()
     }
 
     @Test
