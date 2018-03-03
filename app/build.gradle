@@ -18,13 +18,16 @@ android {
         versionCode 2
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        manifestPlaceholders = [enableCrashlytics: "false"]
     }
-
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [enableCrashlytics: "true"]
         }
+
         all {
             buildConfigField "String", "bitcoinaveragePrivateKey", "\"" + privateProps.getProperty("bitcoinaveragePrivateKey") + "\""
             buildConfigField "String", "bitcoinaveragePublicKey", "\"" + privateProps.getProperty("bitcoinaveragePublicKey") + "\""
@@ -42,30 +45,31 @@ android {
             includeAndroidResources = true
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    // Testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'org.mockito:mockito-core:2.15.0'
+    testImplementation 'com.nhaarman:mockito-kotlin:1.5.0'
+    testImplementation 'org.robolectric:robolectric:3.7.1'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
-    implementation "com.android.support.constraint:constraint-layout:1.0.2"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     // Crashlytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
         transitive = true
     }
-    implementation "com.google.firebase:firebase-core:11.8.0"
-
-    // Testing
-    testImplementation "junit:junit:4.12"
-    androidTestImplementation "com.android.support.test:runner:1.0.1"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.1"
-    testImplementation "org.mockito:mockito-core:2.15.0"
-    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
-    testImplementation "org.robolectric:robolectric:3.7.1"
+    implementation 'com.google.firebase:firebase-core:11.8.0'
 
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
@@ -75,13 +79,14 @@ dependencies {
     testImplementation "android.arch.core:core-testing:$lifecycleVersion"
 
     // Chart library
-    implementation "com.github.PhilJay:MPAndroidChart:v3.0.3"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
     // Java Rx
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.7' // TODO is this needed?
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+
+    // TODO is this needed?
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
-//    implementation "android.arch.persistence.room:rxjava2:$roomVersion"
 
     // Dagger
     implementation "com.google.dagger:dagger:$daggerVersion"

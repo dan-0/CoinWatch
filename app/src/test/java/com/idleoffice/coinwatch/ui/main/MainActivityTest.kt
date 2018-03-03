@@ -1,11 +1,14 @@
 package com.idleoffice.coinwatch.ui.main
 
 import android.view.View
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.idleoffice.coinwatch.BR
 import com.idleoffice.coinwatch.R
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageCurrent
 import com.idleoffice.coinwatch.data.model.bci.BitcoinAverageInfo
 import com.idleoffice.coinwatch.ui.main.graph.CoinLineData
+import io.fabric.sdk.android.Fabric
 import junit.framework.TestCase.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_bar_frame_layout.*
@@ -16,6 +19,12 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowToast
 
+
+
+
+
+
+
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
 
@@ -24,6 +33,10 @@ class MainActivityTest {
     @Before
     fun setUp() {
         subject = Robolectric.setupActivity(MainActivity::class.java)
+
+        // Must disable crashlytics for testing
+        val core = CrashlyticsCore.Builder().disabled(true).build()
+        Fabric.with(subject, Crashlytics.Builder().core(core).build())
     }
 
     @Test

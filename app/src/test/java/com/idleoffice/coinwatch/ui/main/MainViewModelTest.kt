@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-internal class MainViewModelTest {
+class MainViewModelTest {
 
     @Rule
     @JvmField
@@ -106,7 +106,7 @@ internal class MainViewModelTest {
     @Test
     fun doGraphDataCallHappy() {
         val baiList = gcHelper.baiList
-        val sampleName = gcHelper.sampleName
+        val sampleName = "doGraphDataCallHappy"
         val stubObservable : Observable<List<BitcoinAverageInfo>> = Observable.just(baiList)
 
         val mockNavigator = mock<MainNavigator>()
@@ -121,7 +121,7 @@ internal class MainViewModelTest {
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
 
         subject.graphData.observe({lifecycle}){
-            assert(it!! == CoinLineData(baiList, sampleName))
+            assertEquals(it!!.sampleName, sampleName)
             observer.invoke(it)
         }
 

@@ -22,19 +22,7 @@ class MainApp : Application(), HasActivityInjector {
         if(BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
-            Timber.plant(object : Timber.Tree() {
-                override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-                    when(priority) {
-                        Log.ERROR -> {
-                            if(t != null) {
-                                Crashlytics.logException(t)
-                            }
-                            Crashlytics.log(priority, tag, message)
-                        }
-                    }
-                }
-
-            })
+            Timber.plant(CrashlyticsTree())
         }
 
         DaggerAppComponent.builder()
@@ -47,5 +35,16 @@ class MainApp : Application(), HasActivityInjector {
         return activityDispatchingAndroidInjector
     }
 
-
+    class CrashlyticsTree : Timber.Tree() {
+        override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            when(priority) {
+                Log.ERROR -> {
+                    if(t != null) {
+                        Crashlytics.logException(t)
+                    }
+                    Crashlytics.log(priority, tag, message)
+                }
+            }
+        }
+    }
 }

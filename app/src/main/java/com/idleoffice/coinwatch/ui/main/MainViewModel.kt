@@ -75,10 +75,7 @@ class MainViewModel(
                 .flatMap { bitcoinAverageInfoService.getCurrentPrice(BitcoinAverageInfoService.generateKey())
                         .onErrorResumeNext {t: Throwable ->
                             val msg = "Error attempting to get current price, trying again."
-                            var logMessage = ""
-                            if(t.message != null) {
-                                logMessage = t.message!!
-                            }
+                            val logMessage = t.message ?: ""
 
                             if(logMessage.contains("Unauthorized")) {
                                 Timber.w(t, msg)
