@@ -7,7 +7,8 @@ before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
 - echo $PRIVATE_PROPERTIES > private.properties
-- cat ./build.gradle
+- echo $PRIVATE_PROPERTIES
+- cat private.properties
 
 stages:
   - build
