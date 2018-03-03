@@ -6,6 +6,8 @@ stages:
 before_script:
 - export GRADLE_USER_HOME=$(pwd)/.gradle
 - chmod +x ./gradlew
+- echo $PRIVATE_PROPERTIES > private.properties
+- cat ./build.gradle
 
 stages:
   - build
@@ -23,3 +25,6 @@ unitTests:
   stage: test
   script:
     - ./gradlew test
+
+after_script:
+ - rm private.properties
