@@ -5,9 +5,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 def privateProps = new Properties()
-file("private.properties").withInputStream {
-    privateProps.load(it)
-}
 
 android {
     compileSdkVersion 27
@@ -29,6 +26,9 @@ android {
         }
 
         all {
+            file("private.properties").withInputStream {
+                privateProps.load(it)
+            }
             buildConfigField "String", "bitcoinaveragePrivateKey", "\"" + privateProps.getProperty("bitcoinaveragePrivateKey") + "\""
             buildConfigField "String", "bitcoinaveragePublicKey", "\"" + privateProps.getProperty("bitcoinaveragePublicKey") + "\""
         }
