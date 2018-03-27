@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
-def privateProps = new Properties()
+def privateProps = new Properties() 
 
 android {
     compileSdkVersion 27
