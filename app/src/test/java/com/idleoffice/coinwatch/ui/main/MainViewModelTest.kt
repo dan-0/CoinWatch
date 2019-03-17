@@ -1,8 +1,8 @@
 package com.idleoffice.coinwatch.ui.main
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleRegistry
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import android.util.Log
 import com.github.mikephil.charting.data.Entry
 import com.idleoffice.coinwatch.MainApp

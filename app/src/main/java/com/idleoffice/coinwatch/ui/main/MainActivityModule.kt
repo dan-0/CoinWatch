@@ -1,7 +1,7 @@
 package com.idleoffice.coinwatch.ui.main
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import com.idleoffice.coinwatch.retrofit.bci.BitcoinAverageInfoService
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import com.idleoffice.coinwatch.ui.ViewModelProviderFactory

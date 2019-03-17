@@ -1,8 +1,8 @@
 package com.idleoffice.coinwatch.ui.base
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.databinding.ObservableBoolean
+import androidx.lifecycle.AndroidViewModel
+import androidx.databinding.ObservableBoolean
 import com.idleoffice.coinwatch.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 

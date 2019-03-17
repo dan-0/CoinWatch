@@ -15,12 +15,6 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideApplication(application : Application) : Context {
-//        return application
-//    }
-
     @Provides
     fun provideSchedulerProvider() : SchedulerProvider {
         return AppSchedulerProvider()

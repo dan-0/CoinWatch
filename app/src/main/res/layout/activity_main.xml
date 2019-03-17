@@ -13,7 +13,7 @@
             type="com.idleoffice.coinwatch.ui.main.MainViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/currentPriceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,9 +83,9 @@
                     android:textSize="@dimen/price_font_size" />
             </LinearLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/graphLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -159,7 +159,7 @@
                     android:textSize="@dimen/date_time_size" />
             </LinearLayout>
 
-            <android.support.v7.widget.ButtonBarLayout
+            <androidx.appcompat.widget.ButtonBarLayout
                 android:id="@+id/dateBtnBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,8 +196,8 @@
                     android:layout_weight="1"
                     android:onClick="@{() -> viewModel.onBtnClickDay()}"
                     android:text="@string/last_day" />
-            </android.support.v7.widget.ButtonBarLayout>
-        </android.support.constraint.ConstraintLayout>
+            </androidx.appcompat.widget.ButtonBarLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
