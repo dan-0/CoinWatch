@@ -27,7 +27,7 @@ interface BitcoinAverageInfoService {
             val secretKeySpec = SecretKeySpec(BuildConfig.bitcoinaveragePrivateKey.toByteArray(), "HmacSHA256")
             sha256Mac.init(secretKeySpec)
             val hashHex = sha256Mac.doFinal(payload.toByteArray()).toHexString()
-            return payload + "." + hashHex
+            return "$payload.$hashHex"
         }
     }
 

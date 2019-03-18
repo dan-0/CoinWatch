@@ -67,11 +67,12 @@ class MainViewModel(
     }
 
     internal fun getObservableInterval() : Observable<Long> {
-        return Observable.interval(0,10, TimeUnit.SECONDS)
+        return Observable.interval(0,20, TimeUnit.SECONDS)
     }
 
     fun doGetCurrentPrice() {
         val priceGetter = getObservableInterval()
+                .subscribeOn(schedulerProvider.io())
                 .flatMap { bitcoinAverageInfoService.getCurrentPrice(BitcoinAverageInfoService.generateKey())
                         .onErrorResumeNext {t: Throwable ->
                             val msg = "Error attempting to get current price, trying again."
@@ -83,7 +84,6 @@ class MainViewModel(
                                 Timber.e(t, msg)
                             }
                             Observable.empty()} }
-                .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribe({n -> currentPrice.value = n["BTCUSD"]}, {e -> Timber.e(e)})
         compositeDisposable.add(priceGetter)

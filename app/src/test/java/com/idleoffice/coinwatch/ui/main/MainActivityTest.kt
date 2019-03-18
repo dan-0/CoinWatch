@@ -19,16 +19,10 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowToast
 
-
-
-
-
-
-
 @RunWith(RobolectricTestRunner::class)
 class MainActivityTest {
 
-    private lateinit var subject : MainActivity
+    private lateinit var subject: MainActivity
 
     @Before
     fun setUp() {
@@ -82,6 +76,7 @@ class MainActivityTest {
         graphData.value = cld
 
         assertEquals(testSampleName, subject.chart.description.text)
+
         // Check by index for granularity
         assertEquals(subject.chart.data.dataSets[0].getEntryForIndex(0).x,
                 cld.getLineData().dataSets[0].getEntryForIndex(0).x)
@@ -111,7 +106,6 @@ class MainActivityTest {
         // Assert progress bar is gone
         assertEquals(View.GONE, subject.progressBar.visibility)
     }
-
 
     @Test
     fun getActivityViewModel() {

@@ -5,6 +5,7 @@ import android.app.Application
 import android.util.Log
 import com.crashlytics.android.Crashlytics
 import com.idleoffice.coinwatch.dagger.DaggerAppComponent
+import com.idleoffice.idleconsent.IdleConsent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -35,8 +36,11 @@ class MainApp : Application(), HasActivityInjector {
         return activityDispatchingAndroidInjector
     }
 
-    class CrashlyticsTree : Timber.Tree() {
+    inner class CrashlyticsTree : Timber.Tree() {
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            if (!IdleConsent.getInstance(this@MainApp).hasUserAgreedToPrivacy) {
+                return
+            }
             when(priority) {
                 Log.ERROR -> {
                     if(t != null) {
