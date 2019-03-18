@@ -67,3 +67,5 @@
     public protected *;
 }
 -keepattributes InnerClasses,EnclosingMethod
+
+-dontwarn com.idleoffice.idleconsent.**

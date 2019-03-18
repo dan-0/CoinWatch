@@ -5,9 +5,6 @@
     tools:context="com.idleoffice.syncer.ui.main.MainActivity">
 
     <data>
-
-        <import type="android.view.View" />
-
         <variable
             name="viewModel"
             type="com.idleoffice.coinwatch.ui.main.MainViewModel" />
