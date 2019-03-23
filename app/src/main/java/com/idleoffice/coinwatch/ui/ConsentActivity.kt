@@ -14,23 +14,23 @@ import com.idleoffice.idleconsent.IdleInfoSource
 
 class ConsentActivity : AppCompatActivity() {
     private val idleConfig = IdleConsentConfig(
-            "Terms and Conditions",
-            "Please take a brief moment to read through our terms and conditions.",
-            "To ensure the best experience, we collect anonymized user data to inform us of crashes and how our users interact with the app.",
-            listOf("Device information", "Usage statistics", "Advertising ID"),
-            IdleInfoSource(
+            consentTitle = "Disclosures",
+            introStatement = "Please take a moment to read through our privacy disclosure and terms of service.",
+            dataCollectedSummary = "To ensure the best experience, we collect the following anonymized user data to inform us of crashes and how our users interact with the app:",
+            dataCollected = listOf("Device information", "Usage statistics", "Advertising ID"),
+            privacyInfoSource = IdleInfoSource.Web(
                     "Please see our full privacy policy.",
                     Uri.parse("https://dan-0.gitlab.io/coinwatch-web/privacy-policy")
             ),
-            true,
-            "Please take a moment and read our privacy policy",
-            true,
-            "In order to use Super Testy App we require that you agree to our terms and conditions:",
-            IdleInfoSource("See full terms and conditions", Uri.parse("https://dan-0.gitlab.io/coinwatch-web/terms"))
+            requirePrivacy = true,
+            acceptPrivacyPrompt = "Please take a moment and read our privacy policy",
+            privacyPromptChecked = true,
+            termsSummary = "Please take the time to look at our terms and conditions:",
+            termsInfoSource = IdleInfoSource.Web("See full terms and conditions", Uri.parse("https://dan-0.gitlab.io/coinwatch-web/terms"))
     )
 
     private val consentCallback = object: IdleConsentCallback() {
-        override fun onAccept(hasUserAgreedToTerms: Boolean, hasUserAgreedToPrivacy: Boolean) {
+        override fun onAcknowledged(hasUserAgreedToTerms: Boolean, hasUserAgreedToPrivacy: Boolean) {
             if (!hasUserAgreedToTerms) {
                 return
             }
