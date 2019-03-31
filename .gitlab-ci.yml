@@ -26,6 +26,9 @@ unitTests:
   stage: test
   script:
     - ./gradlew app:test
+  artifacts:
+    paths:
+    - app/build/outputs/
 
 after_script:
  - rm ./app/private.properties

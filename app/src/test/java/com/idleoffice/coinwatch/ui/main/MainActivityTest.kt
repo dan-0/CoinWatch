@@ -12,6 +12,7 @@ import io.fabric.sdk.android.Fabric
 import junit.framework.TestCase.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.progress_bar_frame_layout.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,6 +32,11 @@ class MainActivityTest {
         // Must disable crashlytics for testing
         val core = CrashlyticsCore.Builder().disabled(true).build()
         Fabric.with(subject, Crashlytics.Builder().core(core).build())
+    }
+
+    @After
+    fun cleanUp() {
+        subject.finish()
     }
 
     @Test
